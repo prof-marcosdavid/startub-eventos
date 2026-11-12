@@ -1,9 +1,17 @@
+import { Route, Routes } from "react-router"
+import { Layout } from "@/components/Layout"
+import { DetalheEvento } from "@/pages/DetalheEvento"
+import { NaoEncontrada } from "@/pages/NaoEncontrada"
 import { Vitrine } from "@/pages/Vitrine"
 
 export default function App() {
   return (
-    <main className="mx-auto max-w-5xl px-4 py-8">
-      <Vitrine />
-    </main>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<Vitrine />} />
+        <Route path="eventos/:id" element={<DetalheEvento />} />
+        <Route path="*" element={<NaoEncontrada />} />
+      </Route>
+    </Routes>
   )
 }

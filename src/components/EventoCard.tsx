@@ -1,6 +1,8 @@
+import { Link } from "react-router"
 import { Clock, MapPin, Users } from "lucide-react"
 import { DataDoEvento } from "@/components/DataDoEvento"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ehGratuito, formatarValor, partesDaData } from "@/lib/formatar"
 import type { Evento } from "@/tipos"
@@ -9,7 +11,7 @@ interface EventoCardProps {
   evento: Evento
 }
 
-// Uma linha da programação: a data à esquerda, o evento no meio, o valor à direita.
+// Uma linha da programação: a data à esquerda, o evento no meio, o valor e o botão à direita.
 export function EventoCard({ evento }: EventoCardProps) {
   const { hora } = partesDaData(evento.data)
 
@@ -31,6 +33,9 @@ export function EventoCard({ evento }: EventoCardProps) {
         <Badge variant={ehGratuito(evento.valor) ? "secondary" : "default"}>
           {formatarValor(evento.valor)}
         </Badge>
+        <Button asChild>
+          <Link to={`/eventos/${evento.id}`}>Ver evento</Link>
+        </Button>
       </div>
     </Card>
   )
