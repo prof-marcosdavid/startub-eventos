@@ -1,47 +1,40 @@
-import { useState, type FormEvent } from "react"
 import { Link, Navigate } from "react-router"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { TelaDeAcesso } from "@/components/TelaDeAcesso"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/contexts/AuthContext"
-import { traduzir } from "@/lib/erros"
-import { ApiError } from "@/services/api"
+import { aplicarErrosDaApi, traduzir } from "@/lib/erros"
+import { esquemaCadastro } from "@/schemas/cadastro"
+import type { DadosCadastro } from "@/services/auth"
 
 export function Cadastro() {
   const { usuario, cadastrar } = useAuth()
 
-  // Um único useState com um objeto para os quatro campos
-  const [dados, setDados] = useState({ name: "", email: "", password: "", password_confirmation: "" })
-  const [erros, setErros] = useState<Record<string, string[]>>({})
-  const [enviando, setEnviando] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<DadosCadastro>({
+    resolver: zodResolver(esquemaCadastro),
+    defaultValues: { name: "", email: "", password: "", password_confirmation: "" },
+  })
+
+  const cadastro = useMutation({
+    mutationFn: cadastrar,
+    onSuccess: () => toast.success("Conta criada. Bem-vindo!"),
+    onError: (erro) => {
+      if (!aplicarErrosDaApi(erro, setError)) toast.error(traduzir(erro.message))
+    },
+  })
 
   if (usuario) return <Navigate to="/" replace />
-
-  // Troca só o campo que mudou, mantendo os outros
-  function mudar(campo: keyof typeof dados, valor: string) {
-    setDados((atual) => ({ ...atual, [campo]: valor }))
-  }
-
-  async function enviar(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setEnviando(true)
-    setErros({})
-    try {
-      await cadastrar(dados)
-    } catch (erro) {
-      if (erro instanceof ApiError && erro.status === 422) setErros(erro.erros)
-      else setErros({ geral: [(erro as Error).message] })
-    } finally {
-      setEnviando(false)
-    }
-  }
-
-  function erroDe(campo: string) {
-    const mensagem = erros[campo]?.[0]
-    return mensagem ? [{ message: traduzir(mensagem) }] : undefined
-  }
 
   return (
     <TelaDeAcesso>
@@ -51,30 +44,30 @@ export function Cadastro() {
           <CardDescription>Crie sua conta para ver a programação do StartUB 2026 e se inscrever.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={enviar}>
+          <form onSubmit={handleSubmit((dados) => cadastro.mutate(dados))} noValidate>
             <FieldGroup>
-              <Field data-invalid={!!erros.name}>
+              <Field data-invalid={!!errors.name}>
                 <FieldLabel htmlFor="name">Nome</FieldLabel>
-                <Input id="name" value={dados.name} onChange={(e) => mudar("name", e.target.value)} />
-                <FieldError errors={erroDe("name")} />
+                <Input id="name" autoComplete="name" aria-invalid={!!errors.name} {...register("name")} />
+                <FieldError errors={[errors.name]} />
               </Field>
-              <Field data-invalid={!!erros.email}>
+              <Field data-invalid={!!errors.email}>
                 <FieldLabel htmlFor="email">E-mail</FieldLabel>
-                <Input id="email" type="email" value={dados.email} onChange={(e) => mudar("email", e.target.value)} />
-                <FieldError errors={erroDe("email")} />
+                <Input id="email" type="email" autoComplete="email" aria-invalid={!!errors.email} {...register("email")} />
+                <FieldError errors={[errors.email]} />
               </Field>
-              <Field data-invalid={!!erros.password}>
+              <Field data-invalid={!!errors.password}>
                 <FieldLabel htmlFor="password">Senha</FieldLabel>
-                <Input id="password" type="password" value={dados.password} onChange={(e) => mudar("password", e.target.value)} />
-                <FieldError errors={erroDe("password")} />
+                <Input id="password" type="password" autoComplete="new-password" aria-invalid={!!errors.password} {...register("password")} />
+                <FieldError errors={[errors.password]} />
               </Field>
-              <Field>
+              <Field data-invalid={!!errors.password_confirmation}>
                 <FieldLabel htmlFor="password_confirmation">Confirme a senha</FieldLabel>
-                <Input id="password_confirmation" type="password" value={dados.password_confirmation} onChange={(e) => mudar("password_confirmation", e.target.value)} />
+                <Input id="password_confirmation" type="password" autoComplete="new-password" aria-invalid={!!errors.password_confirmation} {...register("password_confirmation")} />
+                <FieldError errors={[errors.password_confirmation]} />
               </Field>
-              <FieldError errors={erroDe("geral")} />
-              <Button type="submit" disabled={enviando}>
-                {enviando ? "Criando..." : "Criar conta"}
+              <Button type="submit" disabled={cadastro.isPending}>
+                {cadastro.isPending ? "Criando..." : "Criar conta"}
               </Button>
               <p className="text-center text-sm text-muted-foreground">
                 Já tem conta? <Link to="/entrar" className="text-primary underline">Entrar</Link>
