@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -7,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/contexts/AuthContext"
+import { useMinhasInscricoes } from "@/contexts/MinhasInscricoesContext"
 import { aplicarErrosDaApi, traduzir } from "@/lib/erros"
 import { ehGratuito, formatarValor } from "@/lib/formatar"
 import { esquemaInscricao, type DadosInscricao } from "@/schemas/inscricao"
@@ -14,13 +16,14 @@ import { inscrever } from "@/services/inscricoes"
 import type { Evento } from "@/tipos"
 
 export function FormularioInscricao({ evento }: { evento: Evento }) {
+  const navigate = useNavigate()
   const { usuario } = useAuth()
+  const { adicionar } = useMinhasInscricoes()
 
   const {
     register,
     handleSubmit,
     setError,
-    reset,
     formState: { errors },
   } = useForm<DadosInscricao>({
     resolver: zodResolver(esquemaInscricao),
@@ -31,8 +34,9 @@ export function FormularioInscricao({ evento }: { evento: Evento }) {
   const inscricao = useMutation({
     mutationFn: (dados: DadosInscricao) => inscrever(evento.id, dados),
     onSuccess: (nova) => {
-      toast.success(`Inscrição nº ${nova.id} realizada!`)
-      reset()
+      adicionar(nova.id)
+      toast.success("Inscrição realizada!")
+      navigate(`/inscricoes/${nova.id}`)
     },
     onError: (erro) => {
       // 422: erros de campo. Qualquer outro (409, 502, rede): aviso geral.

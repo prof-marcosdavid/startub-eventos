@@ -36,6 +36,7 @@ export function Layout() {
             {usuario ? (
               <>
                 <Item para="/">Programação</Item>
+                <Item para="/minhas">Minhas inscrições</Item>
                 <Button variant="ghost" size="sm" onClick={sair} title={`Sair da conta de ${usuario.name}`}>
                   <LogOut /> <span className="sr-only sm:not-sr-only">Sair</span>
                 </Button>

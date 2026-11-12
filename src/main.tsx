@@ -9,6 +9,7 @@ import App from "./App.tsx"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { Toaster } from "@/components/ui/sonner"
 import { AuthProvider } from "@/contexts/AuthContext"
+import { MinhasInscricoesProvider } from "@/contexts/MinhasInscricoesContext"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +23,9 @@ createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <AuthProvider>
-            <App />
+            <MinhasInscricoesProvider>
+              <App />
+            </MinhasInscricoesProvider>
           </AuthProvider>
         </BrowserRouter>
         <Toaster richColors position="top-center" />
