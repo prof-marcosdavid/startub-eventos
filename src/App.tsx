@@ -7,6 +7,7 @@ import { DetalheEvento } from "@/pages/DetalheEvento"
 import { Entrar } from "@/pages/Entrar"
 import { MinhasInscricoes } from "@/pages/MinhasInscricoes"
 import { NaoEncontrada } from "@/pages/NaoEncontrada"
+import { Painel } from "@/pages/Painel"
 import { Vitrine } from "@/pages/Vitrine"
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="eventos/:id" element={<DetalheEvento />} />
           <Route path="inscricoes/:id" element={<Comprovante />} />
           <Route path="minhas" element={<MinhasInscricoes />} />
+          <Route path="painel" element={<Painel />} />
         </Route>
 
         <Route path="*" element={<NaoEncontrada />} />
