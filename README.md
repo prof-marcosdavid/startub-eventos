@@ -11,6 +11,17 @@ congresso.
 
 React 19, TypeScript, Vite, Tailwind CSS, shadcn/ui, React Router, TanStack Query, React Hook Form e Zod.
 
+## Material de apoio
+
+As apostilas do minicurso e o kit visual estão na pasta [`docs`](docs):
+
+| Arquivo | O que é |
+|---|---|
+| [Material prévio](docs/00-material-previo.pdf) | a preparação do ambiente, para fazer antes do primeiro encontro |
+| [Dia 1: da tela à API](docs/01-dia-1-da-tela-a-api.pdf) | componentes, rotas, cadastro e login com token e a API com o TanStack Query |
+| [Dia 2: formulários, estado e pagamento](docs/02-dia-2-formularios-estado-e-pagamento.pdf) | busca e filtro, inscrição com React Hook Form e Zod, pagamento, painel e cadastro com Zod |
+| [Kit visual do StartUB](docs/kit-visual-startub.zip) | a logo, o tema com as cores e as fontes do congresso e os botões e campos maiores, usado no material prévio |
+
 ## Como rodar
 
 Você precisa do [Node.js](https://nodejs.org) 22.22 ou mais novo.
