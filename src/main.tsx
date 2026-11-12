@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import "./index.css"
 import App from "./App.tsx"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
+import { Toaster } from "@/components/ui/sonner"
 import { AuthProvider } from "@/contexts/AuthContext"
 
 const queryClient = new QueryClient({
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")!).render(
             <App />
           </AuthProvider>
         </BrowserRouter>
+        <Toaster richColors position="top-center" />
         <ReactQueryDevtools />
       </QueryClientProvider>
     </ThemeProvider>
