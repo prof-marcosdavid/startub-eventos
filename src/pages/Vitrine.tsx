@@ -1,7 +1,17 @@
+import { useQuery } from "@tanstack/react-query"
 import { EventoCard } from "@/components/EventoCard"
-import { EVENTOS } from "@/dados-de-exemplo"
+import { CarregandoCards, MensagemErro, Vazio } from "@/components/Estados"
+import { listarEventos } from "@/services/eventos"
 
 export function Vitrine() {
+  const { data: eventos, isPending, error, refetch } = useQuery({
+    queryKey: ["eventos"],
+    queryFn: listarEventos,
+  })
+
+  if (isPending) return <CarregandoCards />
+  if (error) return <MensagemErro erro={error} tentarDeNovo={refetch} />
+
   return (
     <section className="grid gap-8">
       <header className="grid gap-2">
@@ -11,11 +21,15 @@ export function Vitrine() {
         </p>
       </header>
 
-      <div className="grid gap-3">
-        {EVENTOS.map((evento) => (
-          <EventoCard key={evento.id} evento={evento} />
-        ))}
-      </div>
+      {eventos.length === 0 ? (
+        <Vazio>A programação ainda não tem eventos.</Vazio>
+      ) : (
+        <div className="grid gap-3">
+          {eventos.map((evento) => (
+            <EventoCard key={evento.id} evento={evento} />
+          ))}
+        </div>
+      )}
     </section>
   )
 }

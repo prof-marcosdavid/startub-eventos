@@ -1,16 +1,24 @@
 import { Link, useParams } from "react-router"
+import { useQuery } from "@tanstack/react-query"
 import { ArrowLeft } from "lucide-react"
 import { DataDoEvento } from "@/components/DataDoEvento"
+import { MensagemErro } from "@/components/Estados"
 import { Badge } from "@/components/ui/badge"
-import { EVENTOS } from "@/dados-de-exemplo"
+import { Skeleton } from "@/components/ui/skeleton"
 import { ehGratuito, formatarData, formatarValor } from "@/lib/formatar"
-import { NaoEncontrada } from "@/pages/NaoEncontrada"
+import { buscarEvento } from "@/services/eventos"
 
 export function DetalheEvento() {
   const { id } = useParams()
-  const evento = EVENTOS.find((e) => e.id === Number(id))
+  const eventoId = Number(id)
 
-  if (!evento) return <NaoEncontrada />
+  const { data: evento, isPending, error } = useQuery({
+    queryKey: ["eventos", eventoId],
+    queryFn: () => buscarEvento(eventoId),
+  })
+
+  if (isPending) return <Skeleton className="h-96 rounded-xl" />
+  if (error) return <MensagemErro erro={error} />
 
   return (
     <article className="grid gap-6">
