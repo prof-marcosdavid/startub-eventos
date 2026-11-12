@@ -70,11 +70,27 @@ direto para o fim da etapa em que a turma está e seguir dali.
 | `d2-etapa-5` | Dia 2: o painel do organizador |
 | `d2-etapa-6` | Dia 2: cadastro e login com Zod |
 
-Para começar a partir de uma etapa, criando uma branch sua:
+Para continuar a partir do fim de uma etapa, por exemplo a etapa 5 do Dia 1, rode na pasta deste
+repositório clonado (e não no projeto que você criou do zero, que não tem as tags):
 
 ```bash
 git switch -c minha-versao d1-etapa-5
+npm install
+npm run dev
 ```
+
+O comando cria uma branch nova e já passa a trabalhar nela:
+
+| Parte | O que significa |
+|---|---|
+| `git switch` | troca a branch em que você está trabalhando |
+| `-c` | cria uma branch nova antes de trocar (de *create*, criar) |
+| `minha-versao` | o **nome** da branch nova, escolhido por você: pode ser `minha-versao`, o seu nome ou outro qualquer |
+| `d1-etapa-5` | o ponto de partida: o código exatamente como estava ao fim da etapa 5 do Dia 1 |
+
+A tag é um marcador fixo e não muda. A branch é sua: o que você editar e salvar com commit fica nela, sem
+mexer no material do minicurso. Cada nome de branch só pode existir uma vez; se precisar de novo, use outro,
+como `minha-versao-2`.
 
 Para ver o que mudou entre duas etapas:
 
