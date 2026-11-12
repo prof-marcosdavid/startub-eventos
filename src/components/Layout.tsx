@@ -1,5 +1,8 @@
 import type { ReactNode } from "react"
 import { NavLink, Outlet } from "react-router"
+import { LogOut } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@/contexts/AuthContext"
 import { cn } from "@/lib/utils"
 
 function Item({ para, children }: { para: string; children: ReactNode }) {
@@ -20,6 +23,8 @@ function Item({ para, children }: { para: string; children: ReactNode }) {
 }
 
 export function Layout() {
+  const { usuario, sair } = useAuth()
+
   return (
     <div className="flex min-h-svh flex-col">
       <header className="sticky top-0 z-10 border-b bg-background/90 backdrop-blur">
@@ -28,7 +33,19 @@ export function Layout() {
             <img src="/startub-logo.jpg" alt="Congresso StartUB 2026" className="h-10 w-auto rounded-md dark:bg-white dark:p-1" />
           </NavLink>
           <nav className="flex flex-wrap items-center gap-x-5 gap-y-1">
-            <Item para="/">Programação</Item>
+            {usuario ? (
+              <>
+                <Item para="/">Programação</Item>
+                <Button variant="ghost" size="sm" onClick={sair} title={`Sair da conta de ${usuario.name}`}>
+                  <LogOut /> <span className="sr-only sm:not-sr-only">Sair</span>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Item para="/entrar">Entrar</Item>
+                <Item para="/cadastro">Criar conta</Item>
+              </>
+            )}
           </nav>
         </div>
       </header>

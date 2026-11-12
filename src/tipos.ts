@@ -12,3 +12,9 @@ export interface Evento {
   updated_at: string
   user_id: number | null // quem criou; null nos eventos de exemplo da API
 }
+
+export interface Usuario {
+  id: number
+  name: string
+  email: string
+}
