@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/contexts/AuthContext"
+import { aplicarErrosDaApi, traduzir } from "@/lib/erros"
 import { ehGratuito, formatarValor } from "@/lib/formatar"
 import { esquemaInscricao, type DadosInscricao } from "@/schemas/inscricao"
 import { inscrever } from "@/services/inscricoes"
@@ -18,6 +19,7 @@ export function FormularioInscricao({ evento }: { evento: Evento }) {
   const {
     register,
     handleSubmit,
+    setError,
     reset,
     formState: { errors },
   } = useForm<DadosInscricao>({
@@ -31,6 +33,10 @@ export function FormularioInscricao({ evento }: { evento: Evento }) {
     onSuccess: (nova) => {
       toast.success(`Inscrição nº ${nova.id} realizada!`)
       reset()
+    },
+    onError: (erro) => {
+      // 422: erros de campo. Qualquer outro (409, 502, rede): aviso geral.
+      if (!aplicarErrosDaApi(erro, setError)) toast.error(traduzir(erro.message))
     },
   })
 
